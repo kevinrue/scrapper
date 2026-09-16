@@ -1,0 +1,66 @@
+# BiocJobs job specification.
+# Computes RNA quality-control metrics and identifies cells that pass QC.
+# Cells are not filtered from the object; the keep decision is stored
+# in the cell metadata for downstream inspection/filtering.
+
+biocjobs: "1.0"
+name: rna-qc
+package: scrapper
+title: RNA Quality Control
+tagline: compute single-cell RNA quality-control metrics
+description: >
+  Computes per-cell RNA quality-control metrics using scrapper::quickRnaQc.se().
+  Mitochondrial genes are identified from their feature-name prefix. Suggested
+  QC thresholds are calculated using median absolute deviations and a logical
+  keep indicator is added to the cell metadata. Cells are not removed from
+  the input object.
+
+version: "1.0.0"
+script: scripts/rna-qc.R
+
+depends: [LoomExperiment]
+
+inputs:
+  - name: infile
+    format: loom
+    label: SingleCellExperiment
+    help: >
+      Loom file containing a SingleCellLoomExperiment with raw RNA counts.
+
+outputs:
+  - name: outfile
+    format: loom
+    label: SingleCellExperiment with QC metrics
+    help: >
+      Loom file containing the SingleCellExperiment with per-cell QC metrics
+      and a logical keep indicator added to the cell metadata.
+
+  - name: qc_table
+    format: tsv
+    label: Per-cell QC metrics
+    help: >
+      Tab-separated table containing calculated per-cell QC metrics
+      and the keep indicator.
+
+options:
+  - name: mitochondrial_prefix
+    type: string
+    default: "MT-"
+    label: Mitochondrial gene prefix
+    help: >
+      Prefix used to identify mitochondrial genes from feature names.
+
+  - name: num_mads
+    type: float
+    default: 3
+    min: 0
+    label: Number of MADs
+    help: >
+      Number of median absolute deviations used to identify outliers when
+      suggesting QC thresholds.
+
+resources:
+  cpus: 1
+  memory_gb: 4
+  disk_gb: 10
+  
