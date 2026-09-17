@@ -1,0 +1,191 @@
+# BiocJobs interface for scrapper::scoreMarkers.se().
+# Checked against BiocJobs main and scrapper master on 2026-09-16.
+# Sources:
+# https://github.com/almahmoud/BiocJobs/blob/main/docs/developer-guide.md
+# https://github.com/libscran/scrapper/blob/master/R/se_scoreMarkers.R
+biocjobs: "1.0"
+name: score-markers-se
+package: scrapper
+title: Score marker genes in a SummarizedExperiment
+tagline: per-group marker statistics from log-normalized single-cell data
+description: >
+  Run scrapper::scoreMarkers.se() on an RDS-serialized SummarizedExperiment
+  or SingleCellExperiment. Read group assignments and optional blocking
+  assignments from colData(), and compute effect-size summaries for every
+  group. Save the returned S4Vectors List of DataFrames as RDS, retaining
+  gene identifiers, group names, and requested rowData() annotations.
+  The job does not normalize expression values or perform clustering.
+version: "1.0.0"
+license: MIT
+script: scripts/score-markers-se.R
+# Both are Suggests, rather than hard dependencies, of scrapper.
+depends: [SummarizedExperiment, SingleCellExperiment]
+# Before remote execution, set container to an image that includes these
+# job files inside the installed scrapper package, BiocJobs, and depends.
+# No prebuilt image containing this new job is assumed here.
+
+inputs:
+  - name: se
+    format: rds
+    label: Single-cell experiment
+    help: >
+      An object saved with saveRDS(), with genes in rows and cells in
+      columns. Supply a log-normalized expression assay, usually logcounts,
+      and a colData() column containing group assignments. Use a
+      self-contained object for workflow staging; an RDS file does not
+      bundle external HDF5 or other file-backed assay data.
+
+outputs:
+  - name: markers
+    format: rds
+    label: Per-group marker statistics
+    help: >
+      The scoreMarkers.se() return value, saved without conversion to a
+      plain list or data.frame. Read with readRDS(); each named element is
+      a DataFrame of marker statistics for one group. All genes are kept.
+
+options:
+  - name: groups_column
+    type: string
+    required: true
+    label: Group column in colData
+    help: >
+      Name of a colData() column, for example clusters or cell_type.
+      At least two observed groups are required. Missing or blank
+      assignments are rejected, and unused factor levels are dropped.
+
+  - name: block_column
+    type: string
+    default: ""
+    label: Optional block column in colData
+    help: >
+      Name of a colData() column containing batch or sample assignments.
+      An empty string disables blocking. Supplied assignments must not
+      contain missing or blank values.
+
+  - name: assay_type
+    type: string
+    default: logcounts
+    label: Expression assay
+    help: >
+      Assay name or a positive one-based assay index written as a string.
+      An exact assay-name match takes precedence over interpreting the
+      value as an index. Values should already be log-normalized.
+
+  - name: num_threads
+    type: integer
+    default: 1
+    min: 1
+    label: Scoring threads
+    help: >
+      Passed to num.threads. If increased, also increase the workflow
+      engine CPU allocation or resources.cpus to at least this value.
+
+  - name: extra_columns
+    type: string
+    default: ""
+    allow_chars: [","]
+    label: Extra row annotations
+    help: >
+      Comma-separated rowData() column names, for example symbol,biotype.
+      An empty string adds no annotations. Names must be unique and must
+      not collide with marker-statistic column names. Column names that
+      themselves contain commas are not supported by this interface.
+
+  - name: order_by
+    type: string
+    default: auto
+    label: Within-group ordering
+    help: >
+      auto delegates the choice of ordering statistic to scrapper; none
+      preserves input gene order. Otherwise supply an output column such
+      as cohens.d.mean or auc.mean. Statistics ending in .min.rank are
+      sorted ascending; other columns are sorted descending. This only
+      orders rows and does not filter genes.
+
+  - name: threshold
+    type: float
+    default: 0.0
+    min: 0
+    label: Minimum expression-change threshold
+    help: >
+      A finite, non-negative value passed to scoreMarkers() through
+      more.marker.args. It modifies Cohen's d and AUC calculations and
+      uses the same scale as the selected expression assay.
+
+  - name: compute_cohens_d
+    type: boolean
+    default: true
+    label: Compute Cohen's d
+
+  - name: compute_auc
+    type: boolean
+    default: true
+    label: Compute area under the curve
+    help: Disabling AUC can reduce computation and memory requirements.
+
+  - name: compute_delta_mean
+    type: boolean
+    default: true
+    label: Compute differences in mean expression
+
+  - name: compute_delta_detected
+    type: boolean
+    default: true
+    label: Compute differences in detected-cell proportions
+
+  - name: summary_quantiles
+    type: string
+    default: ""
+    allow_chars: [","]
+    label: Additional effect-size quantiles
+    help: >
+      Comma-separated probabilities in [0,1], for example 0.25,0.75.
+      An empty string requests no additional quantiles. Passed to
+      compute.summary.quantiles through more.marker.args. The usual
+      summary statistics retain the installed scrapper defaults.
+
+  - name: block_average_policy
+    type: choice
+    choices: [default, mean, quantile]
+    default: default
+    label: How to combine block statistics
+    help: >
+      Used only when block_column is set. default leaves the choice to
+      the installed scrapper version; the other values explicitly select
+      weighted means or quantiles across blocks.
+
+  - name: block_weight_policy
+    type: choice
+    choices: [default, variable, equal, size]
+    default: default
+    label: Block weighting policy
+    help: >
+      Used only when block_column is set. default leaves the choice to
+      scrapper. variable uses its default variable-weight parameters;
+      equal gives equal weight to non-empty blocks, and size weights by
+      block size.
+
+  - name: block_quantile
+    type: float
+    default: 0.5
+    min: 0
+    max: 1
+    label: Quantile across blocks
+    help: Used when blocking is enabled and the averaging policy is quantile.
+
+  - name: min_rank_limit
+    type: integer
+    default: 0
+    min: 0
+    label: Limit for minimum-rank summaries
+    help: >
+      A positive value is passed as min.rank.limit. Zero leaves the
+      installed scrapper default unchanged. This limits rank information,
+      not the number of genes written to the result.
+
+# Starting scheduling estimates, not benchmarked resource guarantees.
+resources:
+  cpus: 1
+  memory_gb: 8
+  disk_gb: 10
