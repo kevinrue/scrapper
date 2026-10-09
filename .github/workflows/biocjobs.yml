@@ -17,7 +17,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v7
-      - uses: almahmoud/BiocJobs/biocjobs-action@main
+      - uses: kevinrue/BiocJobs/biocjobs-action@patch-1
         with:
           base-image: ghcr.io/bioconductor/bioconductor:devel
           image-tag: devel
