@@ -22,14 +22,14 @@ depends: [anndataR]
 
 inputs:
   - name: infile
-    format: h5
+    format: h5ad
     label: SingleCellExperiment
     help: >
       H5AD file containing a SingleCellExperiment with raw RNA counts.
 
 outputs:
-  - name: outfile
-    format: h5
+  - name: sce_rnaqc
+    format: h5ad
     label: SingleCellExperiment with QC metrics
     help: >
       H5AD file containing the SingleCellExperiment with per-cell QC metrics
@@ -71,7 +71,7 @@ tests:
       mitochondrial_prefix: MT-
       num_mads: 3
     outputs:
-      outfile:
+      sce_rnaqc:
         file: test-data/sce.rna-qc.h5ad
         compare: sim_size
         delta: 3000
