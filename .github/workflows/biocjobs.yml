@@ -19,5 +19,5 @@ jobs:
       - uses: actions/checkout@v7
       - uses: almahmoud/BiocJobs/biocjobs-action@main
         with:
-          base-image: ghcr.io/bioconductor/bioconductor:RELEASE_3_23
+          base-image: ghcr.io/bioconductor/bioconductor:devel
           image-tag: devel
