@@ -20,6 +20,8 @@ script: scripts/rna-qc.R
 
 depends: [anndataR]
 
+container: ghcr.io/kevinrue/scrapper:devel
+
 inputs:
   - name: infile
     format: h5ad
