@@ -64,3 +64,14 @@ resources:
   memory_gb: 4
   disk_gb: 10
   
+tests:
+  - inputs:
+      infile: test-data/sce.h5ad
+    options:
+      mitochondrial_prefix: MT-
+      num_mads: 3
+    outputs:
+      outfile:
+        file: test-data/sce.rna-qc.h5ad
+        compare: sim_size
+        delta: 3000
