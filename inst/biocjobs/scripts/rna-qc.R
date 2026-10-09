@@ -45,6 +45,12 @@ sce <- scrapper::quickRnaQc.se(
   )
 )
 
+# anndataR::write_h5ad() cannot overwrite an existing output file
+# [Galaxy]: this is necessary because Galaxy creates an empty output file during tests
+if (file.exists(params$outfile)) {
+  file.remove(params$outfile)
+}
+
 anndataR::write_h5ad(
   object = sce,
   compression = "gzip",
