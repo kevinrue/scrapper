@@ -1,14 +1,12 @@
 params <- BiocJobs::jobParams("scrapper", "rna-qc")
 
 suppressPackageStartupMessages({
-  library(LoomExperiment)
+  library(anndataR)
+  library(scrapper)
+  library(SummarizedExperiment)
 })
 
-sce <- import(
-  params$infile,
-  format = "loom",
-  type = "SingleCellLoomExperiment"
-)
+sce <- anndataR::read_h5ad(params$infile, as = "SingleCellExperiment")
 
 gene_symbols <- SummarizedExperiment::rowData(sce)$Symbol
 
@@ -32,10 +30,10 @@ sce <- scrapper::quickRnaQc.se(
   )
 )
 
-export(
-  sce,
-  params$outfile,
-  format = "loom"
+anndataR::write_h5ad(
+  object = sce,
+  compression = "gzip",
+  path = params$outfile
 )
 
 qc <- as.data.frame(

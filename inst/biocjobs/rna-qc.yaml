@@ -18,21 +18,21 @@ description: >
 version: "1.0.0"
 script: scripts/rna-qc.R
 
-depends: [LoomExperiment]
+depends: [anndataR]
 
 inputs:
   - name: infile
-    format: loom
+    format: h5
     label: SingleCellExperiment
     help: >
-      Loom file containing a SingleCellLoomExperiment with raw RNA counts.
+      H5AD file containing a SingleCellExperiment with raw RNA counts.
 
 outputs:
   - name: outfile
-    format: loom
+    format: h5
     label: SingleCellExperiment with QC metrics
     help: >
-      Loom file containing the SingleCellExperiment with per-cell QC metrics
+      H5AD file containing the SingleCellExperiment with per-cell QC metrics
       and a logical keep indicator added to the cell metadata.
 
   - name: qc_table

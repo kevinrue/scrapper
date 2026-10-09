@@ -29,7 +29,8 @@ Suggests:
     SingleCellExperiment,
     scRNAseq,
     org.Mm.eg.db,
-    igraph
+    igraph,
+    anndataR
 LinkingTo:
     Rcpp,
     assorthead (>= 1.5.16),
