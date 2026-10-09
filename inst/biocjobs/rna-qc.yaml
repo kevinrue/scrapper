@@ -30,7 +30,7 @@ inputs:
       H5AD file containing a SingleCellExperiment with raw RNA counts.
 
 outputs:
-  - name: sce_rnaqc
+  - name: outfile
     format: h5ad
     label: SingleCellExperiment with QC metrics
     help: >
@@ -73,7 +73,7 @@ tests:
       mitochondrial_prefix: MT-
       num_mads: 3
     outputs:
-      sce_rnaqc:
+      outfile:
         file: test-data/sce.rna-qc.h5ad
         compare: sim_size
         delta: 3000

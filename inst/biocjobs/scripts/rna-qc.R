@@ -5,7 +5,7 @@
 ## time it returns, every value below is typed, validated and defaulted.
 
 ## Test command (R)
-## BiocJobs::runJob(BiocJobs::readJob("inst/biocjobs/rna-qc.yaml"), params = list(infile = "test-data/sce.h5ad", mitochondrial_prefix = "MT-", num_mads = 3, sce_rnaqc = "sce.rna-qc.h5ad"))
+## BiocJobs::runJob(BiocJobs::readJob("inst/biocjobs/rna-qc.yaml"), params = list(infile = "test-data/sce.h5ad", mitochondrial_prefix = "MT-", num_mads = 3, outfile = "sce.rna-qc.h5ad"))
 
 ## Validation command (Bash)
 ## Rscript -e 'BiocJobs::biocjobsCLI()' validate .
@@ -47,14 +47,14 @@ sce <- scrapper::quickRnaQc.se(
 
 # anndataR::write_h5ad() cannot overwrite an existing output file
 # [Galaxy]: this is necessary because Galaxy creates an empty output file during tests
-if (file.exists(params$sce_rnaqc)) {
-  file.remove(params$sce_rnaqc)
+if (file.exists(params$outfile)) {
+  file.remove(params$outfile)
 }
 
 anndataR::write_h5ad(
   object = sce,
   compression = "gzip",
-  path = params$sce_rnaqc
+  path = params$outfile
 )
 
 qc <- as.data.frame(
