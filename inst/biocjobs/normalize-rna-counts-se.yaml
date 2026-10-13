@@ -1,0 +1,59 @@
+biocjobs: "1.0"
+name: normalize-rna-counts-se
+package: scrapper
+title: normalize-rna-counts-se
+tagline: one line shown in tool listings
+description: >
+  Longer description of what this job computes, shown to users of the
+  generated wrappers. Two to four sentences.
+version: "0.1.0"
+license: MIT
+script: scripts/normalize-rna-counts-se.R
+# depends: [pkgA, pkgB]   # R packages the script needs beyond the host package
+
+inputs:
+  - name: infile
+    format: h5ad
+    label: Short UI label
+    help: >
+      Longer help text: expected columns, units, how to produce it.
+
+outputs:
+  - name: outfile
+    format: h5ad
+    label: Short UI label
+
+# options:
+#   - name: method              # becomes --method <value>
+#     type: choice              # boolean | choice | string | integer | float
+#     choices: [fast, exact]
+#     default: fast
+#     label: Method
+#   - name: threshold
+#     type: float
+#     default: 0.05
+#     min: 0
+#     max: 1
+#     label: Threshold
+# string options used as R formulas may need extra Galaxy sanitizer chars:
+#  - name: design
+#    type: string
+#    default: "~ condition"
+#    allow_chars: ["~"]
+
+resources:
+  cpus: 1
+  memory_gb: 4
+  disk_gb: 10
+
+# citations:
+#   - doi: 10.1000/your.method.paper
+
+tests:
+  - inputs:
+      infile: test-data/sce.rna-qc.h5ad
+    outputs:
+      outfile:
+        file: test-data/sce.normalized.h5ad
+        compare: sim_size
+        delta: 3000
