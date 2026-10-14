@@ -29,6 +29,9 @@ outputs:
   - name: outfile
     format: h5ad
     label: Short UI label
+  - name: plot_var_explained
+    format: pdf
+    label: Short UI label
 
 options:
   - name: n_pcs
@@ -36,6 +39,16 @@ options:
     default: 25
     min: 2
     label: Number of PCs to retain
+  - name: plot_var_width
+    type: float
+    default: 7
+    min: 1
+    label: Plot width (inches)
+  - name: plot_var_height
+    type: float
+    default: 5
+    min: 1
+    label: Plot height (inches)
 
 resources:
   cpus: 1
@@ -51,8 +64,14 @@ tests:
       features: test-data/hvgs.txt
     options:
       n_pcs: 25
+      plot_var_width: 7
+      plot_var_height: 5
     outputs:
       outfile:
         file: test-data/sce.pca.h5ad
+        compare: sim_size
+        delta: 3000
+      plot_var_explained:
+        file: test-data/pca_var_explained.pdf
         compare: sim_size
         delta: 3000
