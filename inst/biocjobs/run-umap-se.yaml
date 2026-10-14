@@ -8,10 +8,11 @@ description: >
   of a SingleCellExperiment using runUmap.se(), with a configurable number
   of neighbours (15 by default).
   Write the updated object, including the UMAP coordinates, to an H5AD file.
+  Save a scatterplot of the UMAP coordinates as a PDF.
 version: "0.1.0"
 license: MIT
 script: scripts/run-umap-se.R
-depends: [anndataR]
+depends: [anndataR, ggplot2]
 
 container: ghcr.io/kevinrue/scrapper:devel
 
@@ -26,6 +27,9 @@ outputs:
   - name: outfile
     format: h5ad
     label: SingleCellExperiment with UMAP coordinates
+  - name: plot_umap
+    format: pdf
+    label: UMAP scatterplot
 
 options:
   - name: neighbours
@@ -33,6 +37,16 @@ options:
     default: 15
     min: 1
     label: Number of neighbours
+  - name: plot_width
+    type: float
+    default: 7
+    min: 1
+    label: Plot width (inches)
+  - name: plot_height
+    type: float
+    default: 5
+    min: 1
+    label: Plot height (inches)
 
 resources:
   cpus: 1
@@ -44,8 +58,14 @@ tests:
       infile: test-data/sce.pca.h5ad
     options:
       neighbours: 3
+      plot_width: 7
+      plot_height: 5
     outputs:
       outfile:
         file: test-data/sce.umap.h5ad
+        compare: sim_size
+        delta: 3000
+      plot_umap:
+        file: test-data/umap.pdf
         compare: sim_size
         delta: 3000
