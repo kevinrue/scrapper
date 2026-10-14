@@ -73,7 +73,8 @@ ggplot2::ggsave(
   filename = params$plot_var_explained,
   plot = pca_var_plot,
   width = params$plot_var_width,
-  height = params$plot_var_height
+  height = params$plot_var_height,
+  device = "pdf"
 )
 
 ## Provenance to the job log.
