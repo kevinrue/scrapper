@@ -1,0 +1,56 @@
+biocjobs: "1.0"
+name: run-pca-se
+package: scrapper
+title: run-pca-se
+tagline: one line shown in tool listings
+description: >
+  Longer description of what this job computes, shown to users of the
+  generated wrappers. Two to four sentences.
+version: "0.1.0"
+license: MIT
+script: scripts/run-pca-se.R
+# depends: [pkgA, pkgB]   # R packages the script needs beyond the host package
+
+inputs:
+  - name: infile
+    format: h5ad
+    label: Short UI label
+    help: >
+      Longer help text: expected columns, units, how to produce it.
+  - name: features
+    format: txt
+    label: Short UI label
+    help: >
+      Longer help text: expected columns, units, how to produce it.
+
+outputs:
+  - name: outfile
+    format: h5ad
+    label: Short UI label
+
+options:
+  - name: n_pcs
+    type: float
+    default: 25
+    min: 2
+    label: Number of PCs to retain
+
+resources:
+  cpus: 1
+  memory_gb: 4
+  disk_gb: 10
+
+# citations:
+#   - doi: 10.1000/your.method.paper
+
+tests:
+  - inputs:
+      infile: test-data/sce.normalized.h5ad
+      features: test-data/hvgs.txt
+    options:
+      n_pcs: 25
+    outputs:
+      outfile:
+        file: test-data/sce.pca.h5ad
+        compare: sim_size
+        delta: 3000
