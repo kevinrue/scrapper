@@ -9,7 +9,7 @@ description: >
 version: "0.1.0"
 license: MIT
 script: scripts/run-pca-se.R
-depends: [anndataR]
+depends: [anndataR, ggplot2]
 
 container: ghcr.io/kevinrue/scrapper:devel
 

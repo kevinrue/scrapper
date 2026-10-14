@@ -30,7 +30,8 @@ Suggests:
     scRNAseq,
     org.Mm.eg.db,
     igraph,
-    anndataR
+    anndataR,
+    ggplot2
 LinkingTo:
     Rcpp,
     assorthead (>= 1.5.16),
