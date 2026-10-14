@@ -24,7 +24,7 @@ suppressPackageStartupMessages({
   library(scrapper)
 })
 
-sce <- anndataR::read_h5ad("test-data/sce.normalized.h5ad", as = "SingleCellExperiment")
+sce <- anndataR::read_h5ad(params$infile, as = "SingleCellExperiment")
 
 sce <- chooseRnaHvgs.se(sce)
 
