@@ -53,7 +53,7 @@ resources:
 
 tests:
   - inputs:
-      infile: test-data/sce.h5ad
+      infile: test-data/sce.normalized.h5ad
     outputs:
       outfile:
         file: test-data/hvgs.txt
