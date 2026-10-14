@@ -1,0 +1,51 @@
+biocjobs: "1.0"
+name: run-umap-se
+package: scrapper
+title: run-umap-se
+tagline: Compute a UMAP embedding from principal components
+description: >
+  Compute a two-dimensional UMAP embedding from the PCA reduced dimensions
+  of a SingleCellExperiment using runUmap.se(), with a configurable number
+  of neighbours (15 by default).
+  Write the updated object, including the UMAP coordinates, to an H5AD file.
+version: "0.1.0"
+license: MIT
+script: scripts/run-umap-se.R
+depends: [anndataR]
+
+container: ghcr.io/kevinrue/scrapper:devel
+
+inputs:
+  - name: infile
+    format: h5ad
+    label: Input SingleCellExperiment
+    help: >
+      An H5AD file containing a PCA embedding, such as the output of run-pca-se.
+
+outputs:
+  - name: outfile
+    format: h5ad
+    label: SingleCellExperiment with UMAP coordinates
+
+options:
+  - name: neighbours
+    type: integer
+    default: 15
+    min: 1
+    label: Number of neighbours
+
+resources:
+  cpus: 1
+  memory_gb: 4
+  disk_gb: 10
+
+tests:
+  - inputs:
+      infile: test-data/sce.pca.h5ad
+    options:
+      neighbours: 3
+    outputs:
+      outfile:
+        file: test-data/sce.umap.h5ad
+        compare: sim_size
+        delta: 3000
