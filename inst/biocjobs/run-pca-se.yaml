@@ -9,7 +9,9 @@ description: >
 version: "0.1.0"
 license: MIT
 script: scripts/run-pca-se.R
-# depends: [pkgA, pkgB]   # R packages the script needs beyond the host package
+depends: [anndataR]
+
+container: ghcr.io/kevinrue/scrapper:devel
 
 inputs:
   - name: infile
