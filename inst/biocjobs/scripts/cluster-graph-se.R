@@ -7,6 +7,9 @@
 ## Validation command (Bash)
 ## Rscript -e 'BiocJobs::biocjobsCLI()' validate .
 
+# Rscript -e 'BiocJobs::biocjobsCLI()' galaxy   . cluster-graph-se --out wrappers/cluster-graph-se.xml
+# Rscript -e 'BiocJobs::biocjobsCLI()' nextflow . cluster-graph-se --out wrappers/cluster-graph-se.nf
+
 params <- BiocJobs::jobParams("scrapper", "cluster-graph-se")
 
 suppressPackageStartupMessages({

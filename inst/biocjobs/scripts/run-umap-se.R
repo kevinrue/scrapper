@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 
 sce <- anndataR::read_h5ad(params$infile, as = "SingleCellExperiment")
 
-sce <- runUmap.se(sce, num.neighbors = params$neighbours)
+sce <- scrapper::runUmap.se(sce, num.neighbors = params$neighbours)
 
 anndataR::write_h5ad(
   object = sce,
