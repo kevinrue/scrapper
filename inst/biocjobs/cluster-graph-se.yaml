@@ -1,0 +1,66 @@
+biocjobs: "1.0"
+name: cluster-graph-se
+package: scrapper
+title: Cluster cells using a shared nearest neighbour graph
+tagline: Graph-based clustering of single-cell principal components
+description: >
+  Build a shared nearest neighbour graph from the PCA embedding of a
+  SingleCellExperiment and identify communities with clusterGraph.se().
+  Write the updated object, including cluster assignments in the clusters
+  column of colData, to an H5AD file.
+version: "0.1.0"
+license: MIT
+script: scripts/cluster-graph-se.R
+depends: [anndataR]
+
+container: ghcr.io/kevinrue/scrapper:devel
+
+inputs:
+  - name: infile
+    format: h5ad
+    label: Input SingleCellExperiment
+    help: >
+      An H5AD file containing a PCA embedding.
+
+outputs:
+  - name: outfile
+    format: h5ad
+    label: SingleCellExperiment with cluster assignments
+
+options:
+  - name: neighbours
+    type: integer
+    default: 10
+    min: 1
+    label: Number of neighbours
+  - name: method
+    type: choice
+    choices: [multilevel, leiden, walktrap]
+    default: multilevel
+    label: Community detection method
+  - name: resolution
+    type: float
+    default: 1
+    min: 0.01
+    label: Clustering resolution
+    help: >
+      Used by multilevel and
+      Leiden clustering; ignored by Walktrap.
+
+resources:
+  cpus: 1
+  memory_gb: 4
+  disk_gb: 10
+
+tests:
+  - inputs:
+      infile: test-data/sce.pca.h5ad
+    options:
+      neighbours: 3
+      method: multilevel
+      resolution: 1
+    outputs:
+      outfile:
+        file: test-data/sce.clustered.h5ad
+        compare: sim_size
+        delta: 3000
