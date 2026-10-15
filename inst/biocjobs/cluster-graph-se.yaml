@@ -8,10 +8,12 @@ description: >
   SingleCellExperiment and identify communities with clusterGraph.se().
   Write the updated object, including cluster assignments in the clusters
   column of colData, to an H5AD file.
+  Save a scatterplot of a selected reduced dimension entry, coloured by
+  cluster label, as a PDF.
 version: "0.1.0"
 license: MIT
 script: scripts/cluster-graph-se.R
-depends: [anndataR]
+depends: [anndataR, ggplot2]
 
 container: ghcr.io/kevinrue/scrapper:devel
 
@@ -26,6 +28,9 @@ outputs:
   - name: outfile
     format: h5ad
     label: SingleCellExperiment with cluster assignments
+  - name: plot_clusters
+    format: pdf
+    label: Cluster scatterplot
 
 options:
   - name: neighbours
@@ -47,6 +52,29 @@ options:
       Used by multilevel and
       Leiden clustering; ignored by Walktrap.
 
+  - name: plot_reduced_dim
+    type: string
+    default: PCA
+    label: Reduced dimension entry to plot
+    help: >
+      Plot the first two dimensions of this reducedDim entry, coloured by
+      the clusters column of colData.
+  - name: plot_width
+    type: float
+    default: 7
+    min: 1
+    label: Plot width (inches)
+  - name: plot_height
+    type: float
+    default: 5
+    min: 1
+    label: Plot height (inches)
+  - name: point_size
+    type: float
+    default: 1
+    min: 0.1
+    label: Point size
+
 resources:
   cpus: 1
   memory_gb: 4
@@ -59,8 +87,16 @@ tests:
       neighbours: 3
       method: multilevel
       resolution: 1
+      plot_reduced_dim: PCA
+      plot_width: 7
+      plot_height: 5
+      point_size: 1
     outputs:
       outfile:
         file: test-data/sce.clustered.h5ad
+        compare: sim_size
+        delta: 3000
+      plot_clusters:
+        file: test-data/reduced_dim_clusters.pdf
         compare: sim_size
         delta: 3000
