@@ -47,6 +47,11 @@ options:
     default: 5
     min: 1
     label: Plot height (inches)
+  - name: point_size
+    type: float
+    default: 1
+    min: 0.1
+    label: Point size (mm)
 
 resources:
   cpus: 1
@@ -60,6 +65,7 @@ tests:
       neighbours: 3
       plot_width: 7
       plot_height: 5
+      point_size: 1
     outputs:
       outfile:
         file: test-data/sce.umap.h5ad
